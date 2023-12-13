@@ -1,5 +1,4 @@
 const parseData = JSON.parse(data);
-// console.log(parseData);
 const tableEl = document.querySelector('.table');
 const table = {
     id: '',
@@ -8,13 +7,11 @@ const table = {
     maxParticipants: 'максимальное количество участников',
     currentParticipants: 'текущее количество участников'
 }
-// console.log(table);
 
 const idEl = document.createElement('ul');
 idEl.textContent = table.id;
 idEl.className = 'table-ul';
 tableEl.append(idEl);
-// console.log(idEl);
 
 const nameEl = document.createElement('li');
 nameEl.textContent = table.name;
@@ -48,7 +45,7 @@ parseData.forEach(e => {
     const buttonSignUp = document.createElement('button');
     buttonSignUp.className = 'btn-sign-up';
     buttonSignUp.textContent = 'Записаться';
-
+    
     const timeTable = document.createElement('li')
     timeTable.className = 'table-li';
     timeTable.textContent = e.time;
@@ -56,18 +53,11 @@ parseData.forEach(e => {
     const maxParticipantsTable = document.createElement('li');
     maxParticipantsTable.className = 'table-li';
     maxParticipantsTable.textContent = e.maxParticipants;
-    // console.log(maxParticipantsTable);
 
     const currentParticipantsTable = document.createElement('li');
     currentParticipantsTable.className = 'table-li';
     currentParticipantsTable.textContent = e.currentParticipants;
 
-    // if (e.currentParticipants >= e.maxParticipants) {
-    //     const buttonCancelEntry = document.createElement('button');
-    //     buttonCancelEntry.className = 'btn-sign-up';
-    //     buttonCancelEntry.textContent = 'Отменить запись';
-    //     nameTable.append(buttonCancelEntry);
-    // }
     tableEl.append(ulTable);
     ulTable.append(nameTable);
     nameTable.append(buttonSignUp);
@@ -75,30 +65,26 @@ parseData.forEach(e => {
     ulTable.append(maxParticipantsTable);
     ulTable.append(currentParticipantsTable);
 
-   
-    // let countMin = e.currentParticipants;
-    // let countMax = e.maxParticipants;
+    let count = e.currentParticipants;
+    const maxCount = e.maxParticipants;
 
-    
-    buttonSignUp.addEventListener('click', function (el) {
-        if (e.currentParticipants >= e.maxParticipants) {
-            buttonSignUp.classList.replace('btn-sign-up','disabled');
+    buttonSignUp.addEventListener('click', function () {
+        if(count >= maxCount){
+            buttonSignUp.classList.replace('btn-sign-up', 'disabled');
+            localStorage.setItem('count', count);
+            return;
+        } else if(count){
+            buttonSignUp.classList.replace('btn-sign-up', 'disabled');
             const buttonCancelEntry = document.createElement('button');
-            buttonCancelEntry.className = 'btn-sign-up';
+            buttonCancelEntry.className = 'btn-sign-up remove';
             buttonCancelEntry.textContent = 'Отменить запись';
             nameTable.append(buttonCancelEntry);
-            alert('Превышено максимальное количество участников');
-        return;
-        } 
-        e.currentParticipants++;
-        console.log(e.currentParticipants);
+            buttonCancelEntry.addEventListener('click', function () {
+                this.parentElement.removeChild(this);
+                buttonSignUp.classList.replace('disabled', 'btn-sign-up');
+                currentParticipantsTable.textContent = --count;
+              });
+        }
+        currentParticipantsTable.textContent = ++count;
     });
-    // buttonSignUp.addEventListener('click', function () {
-    //     if (buttonSignUp.textContent = 'Отписаться') {
-    //         ;
-    //         return;
-    //     }
-    //     e.currentParticipants++;
-    //     console.log(e.currentParticipants);
-    // });
 });
